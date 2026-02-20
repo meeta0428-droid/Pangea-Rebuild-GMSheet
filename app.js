@@ -7,13 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---- Firebase連携設定 ----
     // TODO: ここをFirebaseコンソールで取得したご自身のプロジェクトの設定に書き換えてください
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyDPls4ObhYos44JRLbSD7AEECaKwsWAfxM",
+        authDomain: "pangeniagm.firebaseapp.com",
+        databaseURL: "https://pangeniagm-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "pangeniagm",
+        storageBucket: "pangeniagm.firebasestorage.app",
+        messagingSenderId: "340424843177",
+        appId: "1:340424843177:web:dfa24f920f2646dd202eb8"
     };
 
     let db = null;
@@ -25,10 +25,44 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("Firebase未設定です。別ツールとラウンドを同期するには app.js の firebaseConfig を設定してください。");
     }
 
+    // ---- ルームID管理 ----
+    let roomId = new URLSearchParams(window.location.search).get('room');
+    const roomInput = document.getElementById('room-id-input');
+    const roomStatus = document.getElementById('room-status');
+    const btnJoinRoom = document.getElementById('btn-join-room');
+
+    if (!roomId) {
+        roomId = Math.random().toString(36).substring(2, 10);
+        const newUrl = `${window.location.pathname}?room=${roomId}`;
+        window.history.replaceState({ path: newUrl }, '', newUrl);
+    }
+
+    if (roomInput) roomInput.value = roomId;
+    if (roomStatus) roomStatus.textContent = `同期中: ${roomId}`;
+
+    if (btnJoinRoom) {
+        btnJoinRoom.addEventListener('click', () => {
+            const newRoom = roomInput.value.trim();
+            if (newRoom && newRoom !== roomId) {
+                // 別のルームIDが入力された場合はそのURLへ移動（リロード）
+                window.location.href = `${window.location.pathname}?room=${newRoom}`;
+            } else {
+                // 同じなら現在のURLをコピー
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                    alert("同期URLをクリップボードにコピーしました！このURLを開くと同じルームに入室します。\n" + url);
+                }).catch(err => {
+                    alert("URLのコピーに失敗しました。URLバーを手動でコピーしてください。");
+                });
+            }
+        });
+    }
+
     // データベースへの同期送信関数
     function syncRoundData(phase, roundNum) {
-        if (!db) return;
-        db.ref('gameData/' + phase).set(roundNum).catch(error => {
+        if (!db || !roomId) return;
+        // ルーム単位で領域を分けて保存
+        db.ref(`rooms/${roomId}/gameData/${phase}`).set(roundNum).catch(error => {
             console.error("Firebase Sync Error:", error);
             showToast("システム", "同期エラー", 0, "ラウンドの外部同期に失敗しました");
         });
