@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const core1Display = document.getElementById('core-1');
     const core2Display = document.getElementById('core-2');
 
-    // ---- AL（エリアレベル）計算機能 ----
+    // ---- AL（アベレージレベル）計算機能 ----
     function calculateAL() {
         const ecTotal = parseInt(ecTotalInput.value);
         const playerCount = parseInt(playerCountInput.value);
