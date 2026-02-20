@@ -702,3 +702,133 @@ input:checked+.slider:before {
     cursor: default;
     /* 決定後はクリック感を出さない */
 }
+
+/* ---- スマートフォン向けレスポンシブデザイン（768px以下） ---- */
+@media (max-width: 768px) {
+
+    /* 1. 全体の余白とレイアウトの圧縮 */
+    #app {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1.25rem;
+        border-radius: 12px;
+        margin-bottom: 1.5rem;
+    }
+
+    header {
+        margin-bottom: 1.5rem;
+    }
+
+    header h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+    }
+
+    /* ルーム設定の折り返し対応 */
+    #room-settings {
+        flex-direction: column;
+        gap: 0.5rem !important;
+    }
+
+    #room-settings input[type="text"] {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    /* --- テーブル（決定表）の最適化 --- */
+    .table-container {
+        /* 表が画面幅を超えた場合は横スクロールさせる */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 1rem;
+        /* スクロールできることを視覚的に知らせるための影を追加 */
+        box-shadow: inset -10px 0 10px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .event-table th,
+    .event-table td {
+        padding: 0.75rem 0.5rem;
+        /* 余白を少し削る */
+        font-size: 0.85rem;
+        /* 文字を少し小さく */
+        white-space: nowrap;
+        /* テキストを折り返さない */
+    }
+
+    /* 「内容」の列だけは長文が入るので折り返しを許可し、最小幅を確保 */
+    .event-table td:nth-child(2) {
+        white-space: normal;
+        min-width: 200px;
+    }
+
+    /* --- 入力欄とボタンの最適化 --- */
+    .input-row {
+        flex-direction: column;
+        /* 横並びの入力欄を縦にする */
+        gap: 0.5rem;
+    }
+
+    input[type="number"],
+    input[type="text"] {
+        width: 100%;
+        /* スマホでは幅いっぱいに */
+        padding: 0.85rem 1rem;
+        /* タップしやすいように少し高さを出す */
+        font-size: 16px;
+        /* スマホの自動ズームを防ぐため16pxを下限とする */
+    }
+
+    .btn {
+        padding: 1rem 1.5rem;
+        /* ボタンのタップ領域拡大 */
+        font-size: 1rem;
+    }
+
+    /* 導入フェイズの入力グリッド最適化 */
+    .stats-input-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem;
+    }
+
+    /* 5つ目の要素（魅力）だけ真ん中に置きたい場合の調整 */
+    .stats-input-grid .stat-item:last-child {
+        grid-column: 1 / -1;
+    }
+
+    /* --- 戦闘・エネミー関連 --- */
+    .enemy-grid {
+        grid-template-columns: 1fr;
+        /* スマホでは敵カードは1列（縦並び） */
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .enemy-card {
+        padding: 1rem;
+    }
+
+    .combat-header {
+        flex-direction: column;
+        /* タイトルとラウンド操作を縦にする */
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .round-counter {
+        width: 100%;
+        justify-content: space-between;
+        /* ＋ − ボタンを両端に */
+    }
+
+    .icon-btn {
+        padding: 0.5rem 1rem;
+        min-width: 50px;
+    }
+}
