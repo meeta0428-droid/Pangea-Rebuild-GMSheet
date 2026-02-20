@@ -47,12 +47,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 別のルームIDが入力された場合はそのURLへ移動（リロード）
                 window.location.href = `${window.location.pathname}?room=${newRoom}`;
             } else {
-                // 同じなら現在のURLをコピー
-                const url = window.location.href;
-                navigator.clipboard.writeText(url).then(() => {
-                    alert("同期URLをクリップボードにコピーしました！このURLを開くと同じルームに入室します。\n" + url);
+                // 同じなら現在のルームIDをコピー
+                navigator.clipboard.writeText(roomId).then(() => {
+                    alert(`ルームID【 ${roomId} 】をコピーしました！\n\nプレイヤーへはこの「ルームID」のみを伝えて、キャラクターシートのURLの末尾に「?room=${roomId}` + `」を付けて開いてもらってください。\n※共有URL（GMの画面）を渡してしまうと、プレイヤーもGMの画面が開いてしまいます。`);
                 }).catch(err => {
-                    alert("URLのコピーに失敗しました。URLバーを手動でコピーしてください。");
+                    alert("ルームIDのコピーに失敗しました。手動でコピーしてください。");
                 });
             }
         });
