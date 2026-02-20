@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パンゲニア・リビルド GMシート</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1>パンゲニア・リビルド GMシート</h1>
+        </header>
+
+        <main>
+            <!-- 共通設定セクション -->
+            <section class="card" id="initial-settings">
+                <h2>共通設定</h2>
+
+                <div class="settings-grid">
+                    <div class="al-calculator section-block">
+                        <h3>エリアレベル (AL) 決定</h3>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label for="ec-total">PCのEC合計値</label>
+                                <input type="number" id="ec-total" value="0" min="0">
+                            </div>
+                            <div class="input-group">
+                                <label for="player-count">参加人数</label>
+                                <input type="number" id="player-count" value="1" min="1">
+                            </div>
+                        </div>
+                        <div class="result-box primary-result">
+                            <span class="label">現在のAL:</span>
+                            <span id="al-display" class="highlight-number">1</span>
+                        </div>
+                        <p class="description">※EC合計 ÷ 参加人数の結果から自動算出（100以下=1, 幅50ごとに上昇）</p>
+                    </div>
+
+                    <div class="scenario-core section-block">
+                        <h3>シナリオコア ランダム決定</h3>
+                        <p class="description">ランダムなシナリオコアを2つ生成します。</p>
+                        <button id="btn-generate-core" class="btn primary">コアを決定する</button>
+                        <div id="core-result" class="result-box secondary-result">
+                            <span id="core-1" class="core-item highlight-text">未決定</span>
+                            <span id="core-2" class="core-item highlight-text">未決定</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 導入フェイズ -->
+            <section class="card" id="intro-phase">
+                <h2>導入フェイズ</h2>
+
+                <div class="intro-tables section-block">
+                    <h3>各種決定表</h3>
+                    <p class="description">全体必要成功数は「AL＋6」、各項目の必要成功数は「AL」です。</p>
+                    <div class="result-box primary-result" style="justify-content: space-around;">
+                        <div>
+                            <span class="label">全体必要成功数:</span>
+                            <span id="intro-overall-target" class="highlight-number">7</span>
+                        </div>
+                        <div>
+                            <span class="label">各項目の必要成功数:</span>
+                            <span id="intro-each-target" class="highlight-number">1</span>
+                        </div>
+                    </div>
+
+                    <div class="stats-input-grid">
+                        <div class="input-group">
+                            <label>剛</label>
+                            <input type="number" id="intro-stat-gou" value="0" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label>巧</label>
+                            <input type="number" id="intro-stat-kou" value="0" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label>知</label>
+                            <input type="number" id="intro-stat-chi" value="0" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label>速</label>
+                            <input type="number" id="intro-stat-soku" value="0" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label>魅</label>
+                            <input type="number" id="intro-stat-mi" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="result-box secondary-result" style="justify-content: center;">
+                        <span class="label">合計成功数:</span>
+                        <span id="intro-total-success" class="highlight-number">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 中盤フェイズ -->
+            <section class="card" id="mid-phase">
+                <h2>中盤フェイズ</h2>
+
+                <div class="mid-tables section-block">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <h3 style="margin-bottom: 0;">各種決定表（イベントテーブル）</h3>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="description"
+                                style="margin: 0; line-height: 1.2;">※行をクリックして「決定」で確定（複数選択可）</span>
+                            <button id="btn-mid-event-confirm" class="btn primary"
+                                style="padding: 0.4rem 0.8rem; width: auto;" disabled>決定</button>
+                            <button id="btn-mid-event-reset" class="btn"
+                                style="padding: 0.4rem 0.8rem; width: auto; background-color: rgba(255,255,255,0.1); display: none;">選び直す</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="event-table" id="mid-event-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">出目</th>
+                                    <th style="width: 20%;">内容</th>
+                                    <th style="width: 15%;">必要成功数</th>
+                                    <th>内容例</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>ボスとの邂逅</td>
+                                    <td class="req-success mid-req">3</td>
+                                    <td>ボスと出会い、戦闘演出となる。任意の能力値で演出を行い判定する。</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>情報の断片</td>
+                                    <td class="req-success mid-req">3</td>
+                                    <td>最終目的地へと近づくための情報が手に入る。任意の能力値で情報を手に入れるか、情報を解読する演出を行い判定する。</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>休息のひととき</td>
+                                    <td class="req-success mid-req">3</td>
+                                    <td>一時休憩となった。任意の能力値判定で休憩の演出を行うこと。</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>緊急脱出</td>
+                                    <td class="req-success mid-req">3</td>
+                                    <td>何かの罠か、天然の落とし穴か。脱出をしなくてはいけなくなった。どのような状況になったかを加えて、どうやって脱出するのかを任意の能力値で判定する。</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>彷徨う</td>
+                                    <td class="req-success mid-req">3</td>
+                                    <td>迷路か、森で方向を見失ったか。どのような状況で、どうやって解決するのかを任意の能力値で判定する。</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>救難要請</td>
+                                    <td class="req-success mid-req">3</td>
+                                    <td>人が助けを求めている。どうやって助けるのか、任意の判定で演出を行い判定する。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 中盤戦闘データ -->
+                <div class="combat-section section-block mt-2">
+                    <div class="combat-header">
+                        <h3>中盤戦闘データ</h3>
+                        <div class="round-counter">
+                            <span class="label">ラウンド:</span>
+                            <button id="mid-round-minus" class="btn icon-btn">-</button>
+                            <span id="mid-round-display" class="highlight-number">1</span>
+                            <button id="mid-round-plus" class="btn icon-btn">+</button>
+                        </div>
+                    </div>
+
+                    <div class="combat-controls">
+                        <button id="btn-add-mid-enemy" class="btn primary">+ エネミーを追加 (最大10体)</button>
+                    </div>
+
+                    <div id="mid-enemy-container" class="enemy-grid"></div>
+                </div>
+            </section>
+
+            <!-- 終盤フェイズ -->
+            <section class="card" id="end-phase">
+                <h2>終盤フェイズ</h2>
+
+                <div class="end-tables section-block">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <h3 style="margin-bottom: 0;">各種決定表（イベントテーブル）</h3>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="description"
+                                style="margin: 0; line-height: 1.2;">※行をクリックして「決定」で確定（複数選択可）</span>
+                            <button id="btn-end-event-confirm" class="btn primary"
+                                style="padding: 0.4rem 0.8rem; width: auto;" disabled>決定</button>
+                            <button id="btn-end-event-reset" class="btn"
+                                style="padding: 0.4rem 0.8rem; width: auto; background-color: rgba(255,255,255,0.1); display: none;">選び直す</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="event-table" id="end-event-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 8%;">出目</th>
+                                    <th style="width: 20%;">内容</th>
+                                    <th style="width: 15%;">敵の最高能力値</th>
+                                    <th>内容例</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>助けを求める声</td>
+                                    <td class="req-success end-req">5</td>
+                                    <td>ボスに人が囚われている。助けるためにはRF５点か、任意の判定で演出した上で判定成功数<span
+                                            class="end-req-calc-1">3</span>を出さなければならない。この行動を行った場合、それ以外の行動を行うことはできない。
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>天空の目</td>
+                                    <td class="req-success end-req">5</td>
+                                    <td>天空の民が介入している。その改造、もしくは洗脳で判定数＋２になっている。解除するためには【巧】で必要成功数<span
+                                            class="end-req-calc-1">3</span>で装置を解除しなければならない。その他の能力値は演出ができるなら必要成功数<span
+                                            class="end-req-calc-2">4</span>で判定できる。もしくはRF5点支払うことでも解除できる。</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>自爆装置</td>
+                                    <td class="req-success end-req">5</td>
+                                    <td>ボスの体内に自爆する装置（もしくは呪術など）が入っている。解除するには【巧】か【知】で必要成功数<span
+                                            class="end-req-calc-3">2</span>か、【速】で必要成功数<span
+                                            class="end-req-calc-1">3</span>で遠くに廃棄してくるかしなければならない。RF５点を支払うことでも解除できる。</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>再生能力</td>
+                                    <td class="req-success end-req">5</td>
+                                    <td>ボスが手番開始時に毎ラウンド５点の回復を行う。回復機能を破壊するため、RF５点か、任意の能力値で演出を行い必要成功数３の判定に成功しなければならない。この行動は他の行動をとることはできない。
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>強烈な殺気</td>
+                                    <td class="req-success end-req">5</td>
+                                    <td>異常な殺気に圧倒され、全てのPCは判定ダイス−２を受ける。RF５点か【魅】必要成功数２で味方を鼓舞することで影響を解除できる。</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>強力な広域攻撃</td>
+                                    <td class="req-success end-req">5</td>
+                                    <td>３ラウンドごとの手番に強力な全エリアへの攻撃（ダメージ＋５）を行ってくる。３ラウンドごとの手番までに相手のHPを半分以下にすればこの攻撃を行うことはできない。
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 終盤戦闘データ -->
+                <div class="combat-section section-block mt-2">
+                    <div class="combat-header" style="flex-wrap: wrap; gap: 1rem;">
+                        <h3>終盤戦闘データ（部位システム対応）</h3>
+                        <div class="round-counter">
+                            <span class="label">ラウンド:</span>
+                            <button id="end-round-minus" class="btn icon-btn">-</button>
+                            <span id="end-round-display" class="highlight-number">1</span>
+                            <button id="end-round-plus" class="btn icon-btn">+</button>
+
+                            <button id="btn-end-round-resolve" class="btn primary"
+                                style="margin-left: 1rem; padding: 0.5rem 1rem;">ラウンド終了処理</button>
+                        </div>
+                    </div>
+
+                    <div class="combat-controls">
+                        <button id="btn-add-end-enemy" class="btn primary">+ 部位/エネミーを追加 (最大10体)</button>
+                        <p class="description" style="margin-top: 0.5rem;">※
+                            「ラウンド終了処理」を押すとラウンドが自動的に＋１され、HP0になった別部位を自動で「オフ」にします。オフになっている別部位ごとに毎ラウンド、オンになっているコアに2点のダメージと防のペナルティダイス（-1）を与え続けます。
+                        </p>
+                    </div>
+
+                    <div id="end-enemy-container" class="enemy-grid"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ダイスなどの通知コンテナ -->
+    <div id="toast-container"></div>
+
+    <!-- Firebase SDK (Compat版：file:/// でのローカル起動用) -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
