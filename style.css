@@ -116,8 +116,29 @@ h2::before {
 
 .pc-name-grid input[type="text"] {
     width: 100%;
-    /* 全角12文字分程度の幅（12em + padding分）に制限 */
+}
+
+.pc-main-name {
+    /* PC名は以前の幅指定を維持し、少し目立たせる */
     max-width: 14em;
+    font-weight: bold;
+}
+
+.role-tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.role-tag-input {
+    flex: 1;
+    /* タグ入力欄は幅を半分ずつ分け合う */
+    font-size: 0.85rem !important;
+    /* 少し小さめの文字に */
+    padding: 0.5rem 0.75rem !important;
+    /* タップしやすいがコンパクトな高さに */
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    /* 背景を少し変えて区別 */
 }
 
 .section-block {
