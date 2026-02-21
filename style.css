@@ -113,6 +113,12 @@ h2::before {
     }
 }
 
+.pc-name-grid input[type="text"] {
+    width: 100%;
+    /* 全角12文字分程度の幅（12em + padding分）に制限 */
+    max-width: 14em;
+}
+
 .section-block {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
