@@ -101,6 +101,18 @@ h2::before {
     }
 }
 
+.pc-name-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .pc-name-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 .section-block {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
