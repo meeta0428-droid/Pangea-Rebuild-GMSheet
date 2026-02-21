@@ -103,7 +103,8 @@ h2::before {
 
 .pc-name-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    /* パソコン表示では3つずつ折り返す（2段構成になる） */
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
 }
 
